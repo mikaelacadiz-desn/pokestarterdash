@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokemon Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Home Tab (Dashboard) -->
+        <div id="home" class="tab-content active">
+            <div id="dashboard-loading" class="loading-message">Loading survey data...</div>
+            <div id="dashboard-content" style="display: none;">
+                <!-- Header -->
+                <header class="header">
+                    <h1 class="header__title">PokéStarter Rankings</h1>
+                    <p class="header__subtitle">The global vote is in... who's the #1 Pokémon starter of all time?</p>
+                </header>
+
+                <!-- Hero: #1 Starter -->
+                <section class="hero" id="hero-section">
+                    <!-- Column 1: Sprite & Evolution -->
+                    <div class="hero__sprite-column">
+                        <img
+                            class="pokemon-card__sprite sprite-squirtle"
+                            id="hero-sprite"
+                            src=""
+                            alt="Pokemon"
+                        />
+
+                        <!-- Evolution Line -->
+                        <div class="pokemon-card__evolutions" id="hero-evolutions">
+                            <div class="evo-slot">
+                                <div class="evo-slot__img" id="evo-starter"></div>
+                                <span class="evo-slot__label" id="evo-starter-label">Starter</span>
+                            </div>
+                            <div class="evo-slot">
+                                <div class="evo-slot__img" id="evo-1"></div>
+                                <span class="evo-slot__label" id="evo-1-label">Middle Evolution</span>
+                            </div>
+                            <div class="evo-slot">
+                                <div class="evo-slot__img" id="evo-2"></div>
+                                <span class="evo-slot__label" id="evo-2-label">Final Evolution</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Column 2: Info -->
+                    <div class="hero__info">
+                        <span class="hero__eyebrow">The #1 Pokémon starter is...</span>
+                        <h2 class="hero__name" id="hero-name">Loading...</h2>
+                        <div class="badges" id="hero-badges">
+                            <span class="badge badge--gen" id="hero-gen">Gen 1</span>
+                            <span class="badge badge--water" id="hero-type">Water</span>
+                        </div>
+                        <div class="vote-count">
+                            <div class="vote-count__arrow"></div>
+                            <span class="vote-count__text" id="hero-votes">with 0 votes</span>
+                        </div>
+                        <p class="hero__trainers" id="hero-trainers">From 0 trainers worldwide</p>
+                        <button class="btn-vote" id="vote-btn">Add your vote!</button>
+                    </div>
+                </section>
+
+                <!-- Type Panels -->
+                <section class="type-panels" id="type-panels-section">
+                    <!-- Side Type 1 Panel -->
+                    <div class="type-panel type-panel--fire" id="type-panel-1">
+                        <p class="type-panel__label">
+                            The top <span class="badge--fire-inline" id="type-1-badge">Fire</span> starter is...
+                        </p>
+                        <div style="display:flex;align-items:center;gap:8px;">
+                            <span class="type-panel__name" id="type-1-name">Pokemon</span>
+                            <span class="type-panel__gen-badge" id="type-1-gen">Gen 1</span>
+                        </div>
+                        <img
+                            class="type-panel__sprite sprite-squirtle"
+                            id="type-1-sprite"
+                            src=""
+                            alt="Pokemon"
+                        />
+                        <div class="type-panel__votes">
+                            <div class="vote-count__arrow"></div>
+                            <span class="vote-count__text" id="type-1-votes">with 0 votes</span>
+                        </div>
+                    </div>
+
+                    <!-- Side Type 2 Panel -->
+                    <div class="type-panel type-panel--grass" id="type-panel-2">
+                        <p class="type-panel__label">
+                            The top <span class="badge--grass-inline" id="type-2-badge">Grass</span> starter is...
+                        </p>
+                        <div style="display:flex;align-items:center;gap:8px;">
+                            <span class="type-panel__name" id="type-2-name">Pokemon</span>
+                            <span class="type-panel__gen-badge" id="type-2-gen">Gen 1</span>
+                        </div>
+                        <img
+                            class="type-panel__sprite sprite-squirtle"
+                            id="type-2-sprite"
+                            src=""
+                            alt="Pokemon"
+                        />
+                        <div class="type-panel__votes">
+                            <div class="vote-count__arrow"></div>
+                            <span class="vote-count__text" id="type-2-votes">with 0 votes</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Vote Banner -->
+                <div class="vote-banner" id="vote-banner">
+                </div>
+
+                <!-- Map Section -->
+                <!-- Map Section -->
+                <div class="map-panel">
+                    <div class="map-side">
+                        <div class="map-title">
+                            <span>Most Popular Starter</span>
+                            <span class="light">by Country</span>
+                        </div>
+                        <div class="map-legend">
+                            <div class="legend-item"><div class="legend-dot" style="background:#5aaf5a;"></div>Grass</div>
+                            <div class="legend-item"><div class="legend-dot" style="background:#e05030;"></div>Fire</div>
+                            <div class="legend-item"><div class="legend-dot" style="background:#3a8fd4;"></div>Water</div>
+                        </div>
+                        <svg id="map-svg"></svg>
+                        <div class="map-tooltip" id="tooltip"></div>
+                    </div>
+                    <div class="top10-side">
+                        <div class="top10-title">Top 10 Favorite Starters</div>
+                        <div class="top10-list" id="top10-list"></div>
+                    </div>
+                </div>
+
+                <!-- Choice Method Stats Section -->
+                <section class="choice-stats-section">
+                    <div class="choice-stats-panel">
+                        <div class="choice-stats-text">
+                            <h3>Based on global votes</h3>
+                            <p><strong id="choice-method-name">Experience</strong> <br> is the main reason trainers choose their starters, taking <strong id="choice-method-percent">0</strong>% of the vote.</p>
+                        </div>
+                        <div class="choice-stats-chart">
+                            <canvas id="choiceMethodChart"></canvas>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Combined Trainer Types Section -->
+                <section class="combined-trainer-section">
+                    <div class="combined-trainer-panel">
+                        <div class="combined-trainer-text">
+                            <p>If all trainers were combined into one, their types would be</p>
+                            <div class="type-buttons" id="typeButtons"></div>
+                            <p id="type-percentage"></p>
+                        </div>
+                        <div class="combined-trainer-image">
+                            <img src="img/trainer.webp" alt="Trainer" id="trainerImage">
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <!-- Form Tab -->
+        <div id="form" class="tab-content">
+            <button id="back-to-home" class="back-button">← Back to Rankings</button>
+            <h2>Pokemon Starter Survey</h2>
+            <form id="pokemon-survey">
+
+                <!-- Question 1: Choose favourite starter from each type -->
+                <div class="form-section">
+                    <h3>Choose the best starter from each type:</h3>
+
+                    <div class="starter-section">
+                        <h4>Fire Types</h4>
+                        <div id="fire-starters" class="starters-grid"></div>
+                        <input type="hidden" name="fire-starter" id="fire-starter-input" required>
+                    </div>
+
+                    <div class="starter-section">
+                        <h4>Water Types</h4>
+                        <div id="water-starters" class="starters-grid"></div>
+                        <input type="hidden" name="water-starter" id="water-starter-input" required>
+                    </div>
+
+                    <div class="starter-section">
+                        <h4>Grass Types</h4>
+                        <div id="grass-starters" class="starters-grid"></div>
+                        <input type="hidden" name="grass-starter" id="grass-starter-input" required>
+                    </div>
+                </div>
+
+                <!-- Question 2: Favourite Pokemon Type -->
+                <div class="form-section">
+                    <h3>What are your top two favourite Pokemon types?</h3>
+                    <div id="type-buttons" class="type-buttons-grid"></div>
+                    <input type="hidden" name="favourite-types" id="favourite-types-input" required>
+                </div>
+
+                <!-- Question 3: Favourite Generation -->
+                <div class="form-section">
+                    <h3>What is your favourite generation of starters?</h3>
+                    <select name="favourite-generation" id="favourite-generation" required>
+                        <option value="">Select a generation</option>
+                        <option value="1">Generation 1 (Kanto)</option>
+                        <option value="2">Generation 2 (Johto)</option>
+                        <option value="3">Generation 3 (Hoenn)</option>
+                        <option value="4">Generation 4 (Sinnoh)</option>
+                        <option value="5">Generation 5 (Unova)</option>
+                        <option value="6">Generation 6 (Kalos)</option>
+                        <option value="7">Generation 7 (Alola)</option>
+                        <option value="8">Generation 8 (Galar)</option>
+                        <option value="9">Generation 9 (Paldea)</option>
+                    </select>
+                </div>
+
+                <!-- Question 4: Country -->
+                <div class="form-section">
+                    <h3>What country are you from? (Type it)</h3>
+                    <input type="text" name="country" id="country" list="countries" required placeholder="Type to search countries">
+                    <datalist id="countries">
+                        <option value="Afghanistan">
+                        <option value="Albania">
+                        <option value="Algeria">
+                        <option value="Andorra">
+                        <option value="Angola">
+                        <option value="Antigua and Barbuda">
+                        <option value="Argentina">
+                        <option value="Armenia">
+                        <option value="Australia">
+                        <option value="Austria">
+                        <option value="Azerbaijan">
+                        <option value="Bahamas">
+                        <option value="Bahrain">
+                        <option value="Bangladesh">
+                        <option value="Barbados">
+                        <option value="Belarus">
+                        <option value="Belgium">
+                        <option value="Belize">
+                        <option value="Benin">
+                        <option value="Bhutan">
+                        <option value="Bolivia">
+                        <option value="Bosnia and Herzegovina">
+                        <option value="Botswana">
+                        <option value="Brazil">
+                        <option value="Brunei">
+                        <option value="Bulgaria">
+                        <option value="Burkina Faso">
+                        <option value="Burundi">
+                        <option value="Cambodia">
+                        <option value="Cameroon">
+                        <option value="Canada">
+                        <option value="Cape Verde">
+                        <option value="Central African Republic">
+                        <option value="Chad">
+                        <option value="Chile">
+                        <option value="China">
+                        <option value="Colombia">
+                        <option value="Comoros">
+                        <option value="Congo">
+                        <option value="Costa Rica">
+                        <option value="Croatia">
+                        <option value="Cuba">
+                        <option value="Cyprus">
+                        <option value="Czech Republic">
+                        <option value="Denmark">
+                        <option value="Djibouti">
+                        <option value="Dominica">
+                        <option value="Dominican Republic">
+                        <option value="Ecuador">
+                        <option value="Egypt">
+                        <option value="El Salvador">
+                        <option value="Equatorial Guinea">
+                        <option value="Eritrea">
+                        <option value="Estonia">
+                        <option value="Ethiopia">
+                        <option value="Fiji">
+                        <option value="Finland">
+                        <option value="France">
+                        <option value="Gabon">
+                        <option value="Gambia">
+                        <option value="Georgia">
+                        <option value="Germany">
+                        <option value="Ghana">
+                        <option value="Greece">
+                        <option value="Grenada">
+                        <option value="Guatemala">
+                        <option value="Guinea">
+                        <option value="Guinea-Bissau">
+                        <option value="Guyana">
+                        <option value="Haiti">
+                        <option value="Honduras">
+                        <option value="Hungary">
+                        <option value="Iceland">
+                        <option value="India">
+                        <option value="Indonesia">
+                        <option value="Iran">
+                        <option value="Iraq">
+                        <option value="Ireland">
+                        <option value="Israel">
+                        <option value="Italy">
+                        <option value="Ivory Coast">
+                        <option value="Jamaica">
+                        <option value="Japan">
+                        <option value="Jordan">
+                        <option value="Kazakhstan">
+                        <option value="Kenya">
+                        <option value="Kiribati">
+                        <option value="Kosovo">
+                        <option value="Kuwait">
+                        <option value="Kyrgyzstan">
+                        <option value="Laos">
+                        <option value="Latvia">
+                        <option value="Lebanon">
+                        <option value="Lesotho">
+                        <option value="Liberia">
+                        <option value="Libya">
+                        <option value="Liechtenstein">
+                        <option value="Lithuania">
+                        <option value="Luxembourg">
+                        <option value="Madagascar">
+                        <option value="Malawi">
+                        <option value="Malaysia">
+                        <option value="Maldives">
+                        <option value="Mali">
+                        <option value="Malta">
+                        <option value="Marshall Islands">
+                        <option value="Mauritania">
+                        <option value="Mauritius">
+                        <option value="Mexico">
+                        <option value="Micronesia">
+                        <option value="Moldova">
+                        <option value="Monaco">
+                        <option value="Mongolia">
+                        <option value="Montenegro">
+                        <option value="Morocco">
+                        <option value="Mozambique">
+                        <option value="Myanmar">
+                        <option value="Namibia">
+                        <option value="Nauru">
+                        <option value="Nepal">
+                        <option value="Netherlands">
+                        <option value="New Zealand">
+                        <option value="Nicaragua">
+                        <option value="Niger">
+                        <option value="Nigeria">
+                        <option value="North Korea">
+                        <option value="North Macedonia">
+                        <option value="Norway">
+                        <option value="Oman">
+                        <option value="Pakistan">
+                        <option value="Palau">
+                        <option value="Palestine">
+                        <option value="Panama">
+                        <option value="Papua New Guinea">
+                        <option value="Paraguay">
+                        <option value="Peru">
+                        <option value="Philippines">
+                        <option value="Poland">
+                        <option value="Portugal">
+                        <option value="Qatar">
+                        <option value="Romania">
+                        <option value="Russia">
+                        <option value="Rwanda">
+                        <option value="Saint Kitts and Nevis">
+                        <option value="Saint Lucia">
+                        <option value="Saint Vincent and the Grenadines">
+                        <option value="Samoa">
+                        <option value="San Marino">
+                        <option value="Sao Tome and Principe">
+                        <option value="Saudi Arabia">
+                        <option value="Senegal">
+                        <option value="Serbia">
+                        <option value="Seychelles">
+                        <option value="Sierra Leone">
+                        <option value="Singapore">
+                        <option value="Slovakia">
+                        <option value="Slovenia">
+                        <option value="Solomon Islands">
+                        <option value="Somalia">
+                        <option value="South Africa">
+                        <option value="South Korea">
+                        <option value="South Sudan">
+                        <option value="Spain">
+                        <option value="Sri Lanka">
+                        <option value="Sudan">
+                        <option value="Suriname">
+                        <option value="Sweden">
+                        <option value="Switzerland">
+                        <option value="Syria">
+                        <option value="Taiwan">
+                        <option value="Tajikistan">
+                        <option value="Tanzania">
+                        <option value="Thailand">
+                        <option value="Timor-Leste">
+                        <option value="Togo">
+                        <option value="Tonga">
+                        <option value="Trinidad and Tobago">
+                        <option value="Tunisia">
+                        <option value="Turkey">
+                        <option value="Turkmenistan">
+                        <option value="Tuvalu">
+                        <option value="Uganda">
+                        <option value="Ukraine">
+                        <option value="United Arab Emirates">
+                        <option value="United Kingdom">
+                        <option value="United States">
+                        <option value="Uruguay">
+                        <option value="Uzbekistan">
+                        <option value="Vanuatu">
+                        <option value="Vatican City">
+                        <option value="Venezuela">
+                        <option value="Vietnam">
+                        <option value="Yemen">
+                        <option value="Zambia">
+                        <option value="Zimbabwe">
+                    </datalist>
+                </div>
+
+                <!-- Question 5: Age Range -->
+                <div class="form-section">
+                    <h3>What is your age range?</h3>
+                    <select name="age-range" id="age-range" required>
+                        <option value="">Select age range</option>
+                        <option value="under-18">Under 18</option>
+                        <option value="18-24">18-24</option>
+                        <option value="25-34">25-34</option>
+                        <option value="35-44">35-44</option>
+                        <option value="45+">45+</option>
+                    </select>
+                </div>
+
+                <!-- Question 6: How do you choose your starter? -->
+                <div class="form-section">
+                    <h3>How do you choose your starter?</h3>
+                    <div class="radio-group">
+                        <label>
+                            <input type="radio" name="choice-method" value="type" required>
+                            By type
+                        </label>
+                        <label>
+                            <input type="radio" name="choice-method" value="design" required>
+                            By design
+                        </label>
+                        <label>
+                            <input type="radio" name="choice-method" value="strength" required>
+                            By strength
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="submit-button">Submit Survey</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+    // ── Chart.js initialization ────────────────────────────────────────────────────────
+    Chart.defaults.font.family = "'Press Start 2P', monospace";
+    Chart.defaults.color = '#3a4a70';
+
+    const GRASS = '#5aaf5a';
+    const FIRE  = '#e05030';
+    const WATER = '#3a8fd4';
+
+    // Starter to generation mapping
+    const starterToGen = {
+      // Fire starters
+      'charmander': 1, 'cyndaquil': 2, 'torchic': 3, 'chimchar': 4, 'tepig': 5,
+      'fennekin': 6, 'litten': 7, 'scorbunny': 8, 'fuecoco': 9,
+      // Water starters
+      'squirtle': 1, 'totodile': 2, 'mudkip': 3, 'piplup': 4, 'oshawott': 5,
+      'froakie': 6, 'popplio': 7, 'sobble': 8, 'quaxly': 9,
+      // Grass starters
+      'bulbasaur': 1, 'chikorita': 2, 'treecko': 3, 'turtwig': 4, 'snivy': 5,
+      'chespin': 6, 'rowlet': 7, 'grookey': 8, 'sprigatito': 9
+    };
+
+    // Initialize charts with data from API
+    async function initializeCharts() {
+      try {
+        const response = await fetch('/api/stats');
+        const stats = await response.json();
+
+        // Check if chart elements exist in DOM before trying to render
+        const barChartElement = document.getElementById('barChart');
+        const pieTypeElement = document.getElementById('pieType');
+        const waffleChoiceElement = document.getElementById('waffleChoice');
+
+        // If no chart elements exist, skip initialization
+        if (!barChartElement && !pieTypeElement && !waffleChoiceElement) {
+          console.log('No chart elements found in dashboard. Skipping chart initialization.');
+          return;
+        }
+
+        // ── Initialize generation-based bar chart data ──
+        const gens = ['Gen 1','Gen 2','Gen 3','Gen 4','Gen 5','Gen 6','Gen 7','Gen 8','Gen 9'];
+        const waterVotes = new Array(9).fill(0);
+        const fireVotes = new Array(9).fill(0);
+        const grassVotes = new Array(9).fill(0);
+
+        // Process water starters
+        Object.entries(stats.starterStats.water).forEach(([name, count]) => {
+          const lowerName = name.toLowerCase();
+          const gen = starterToGen[lowerName];
+          if (gen) {
+            waterVotes[gen - 1] += count;
+          }
+        });
+
+        // Process fire starters
+        Object.entries(stats.starterStats.fire).forEach(([name, count]) => {
+          const lowerName = name.toLowerCase();
+          const gen = starterToGen[lowerName];
+          if (gen) {
+            fireVotes[gen - 1] += count;
+          }
+        });
+
+        // Process grass starters
+        Object.entries(stats.starterStats.grass).forEach(([name, count]) => {
+          const lowerName = name.toLowerCase();
+          const gen = starterToGen[lowerName];
+          if (gen) {
+            grassVotes[gen - 1] += count;
+          }
+        });
+
+        // ── Initialize choice method data ──
+        const choiceLabels = Object.keys(stats.choiceMethodStats);
+        const choiceData = Object.values(stats.choiceMethodStats);
+        const choiceTotal = choiceData.reduce((a, b) => a + b, 0) || 1;
+        const choicePercentages = choiceData.map(v => Math.round((v / choiceTotal) * 100));
+
+        // ── Initialize type data ──
+        const typeLabels = [
+          'Water','Fire','Grass','Electric','Psychic','Dragon',
+          'Dark','Fighting','Steel','Ghost','Fairy','Ice',
+          'Rock','Ground','Flying','Poison','Bug','Normal'
+        ];
+        const typeData = typeLabels.map(type => stats.typeStats[type.toLowerCase()] || 0);
+        const typeTotal = typeData.reduce((a, b) => a + b, 0) || 1;
+        const typePercentages = typeData.map(v => Math.round((v / typeTotal) * 100));
+
+        // ── 1. Stacked Bar Chart ───────────────────────────────────────────────────────
+        if (barChartElement) {
+          const barCtx = barChartElement.getContext('2d');
+          new Chart(barCtx, {
+            type: 'bar',
+            data: {
+              labels: gens,
+              datasets: [
+                {
+                  label: 'Water',
+                  data: waterVotes,
+                  backgroundColor: WATER,
+                  borderWidth: 0,
+                  borderRadius: { topLeft: 0, topRight: 0, bottomLeft: 3, bottomRight: 3 },
+                  borderSkipped: false
+                },
+                {
+                  label: 'Fire',
+                  data: fireVotes,
+                  backgroundColor: FIRE,
+                  borderWidth: 0,
+                  borderRadius: 0,
+                  borderSkipped: false
+                },
+                {
+                  label: 'Grass',
+                  data: grassVotes,
+                  backgroundColor: GRASS,
+                  borderWidth: 0,
+                  borderRadius: { topLeft: 3, topRight: 3, bottomLeft: 0, bottomRight: 0 },
+                  borderSkipped: false
+                }
+              ]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              interaction: { mode: 'index' },
+              plugins: {
+                legend: { display: false },
+                tooltip: {
+                  backgroundColor: 'rgba(25,40,90,0.88)',
+                  titleColor: '#a8c8ff',
+                  bodyColor: '#fff',
+                  cornerRadius: 8,
+                  padding: 10,
+                  callbacks: {
+                    label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y} votes`
+                  }
+                }
+              },
+              scales: {
+                x: {
+                  stacked: true,
+                  grid: { display: false },
+                  border: { display: false },
+                  ticks: { font: { size: 11, weight: '600' }, color: '#6677aa' }
+                },
+                y: {
+                  stacked: true,
+                  grid: { color: 'rgba(160,180,220,0.25)', drawTicks: false },
+                  border: { display: false, dash: [4,4] },
+                  ticks: {
+                    font: { size: 10 },
+                    color: '#99a8cc',
+                    padding: 8,
+                    maxTicksLimit: 6
+                  }
+                }
+              }
+            }
+          });
+        }
+
+        // ── 2. Waffle: How do you choose your starter? ────────────────────────────────────
+        generateWaffleChart(choiceLabels, choicePercentages);
+
+        // ── 3. Pie: Favourite Type — all 18 types ─────────────────────────────────────
+        if (pieTypeElement) {
+          const pieTypeCtx = pieTypeElement.getContext('2d');
+          new Chart(pieTypeCtx, {
+            type: 'doughnut',
+            data: {
+              labels: typeLabels,
+              datasets: [{
+                data: typePercentages,
+                backgroundColor: [
+                  '#3a8fd4','#e05030','#5aaf5a','#f7d02c','#f85888','#6f35fc',
+                  '#705848','#c03028','#b8b8d0','#735797','#d685ad','#98d8d8',
+                  '#b6a136','#e2bf65','#a98ff3','#a33ea1','#a8b820','#a8a878'
+                ],
+                borderColor: '#f0f5fb',
+                borderWidth: 2,
+                hoverOffset: 6,
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              cutout: '50%',
+              plugins: {
+                legend: {
+                  position: 'bottom',
+                  labels: {
+                    font: { size: 9, weight: '600' },
+                    color: '#3a4a70',
+                    padding: 6,
+                    boxWidth: 9,
+                    boxHeight: 9,
+                    usePointStyle: true,
+                    pointStyle: 'rectRounded',
+                  }
+                },
+                tooltip: {
+                  backgroundColor: 'rgba(25,40,90,0.88)',
+                  titleColor: '#a8c8ff',
+                  bodyColor: '#fff',
+                  cornerRadius: 8,
+                  padding: 10,
+                  callbacks: {
+                    label: ctx => ` ${ctx.label}: ${ctx.parsed}%`
+                  }
+                }
+              }
+            }
+          });
+        } // End of pieType if statement
+      } catch (error) {
+        console.error('Error initializing charts:', error);
+      }
+    }
+
+    // ── WAFFLE CHART: How do you choose your starter? ───────────────────────────────
+    function generateWaffleChart(labels, percentages) {
+      const container = document.getElementById('waffleChoice');
+      if (!container) return;
+
+      const colors = ['#3a8fd4','#e05030','#5aaf5a','#f7d02c','#f85888'];
+      const gridSize = 10; // 10x10 = 100 squares
+      let html = '<div class="waffle-grid">';
+      
+      // Create array of square data
+      const squares = [];
+      labels.forEach((label, idx) => {
+        const count = Math.round(percentages[idx]);
+        for (let i = 0; i < count; i++) {
+          squares.push({
+            color: colors[idx % colors.length],
+            label: label,
+            percentage: percentages[idx]
+          });
+        }
+      });
+
+      // Generate squares
+      squares.forEach(sq => {
+        html += `<div class="waffle-square" style="background: ${sq.color};" title="${sq.label}: ${sq.percentage}%"></div>`;
+      });
+
+      // Fill remaining squares with light gray
+      while (squares.length < 100) {
+        html += '<div class="waffle-square" style="background: #e8eef8;"></div>';
+        squares.push(null);
+      }
+
+      html += '</div>';
+
+      // Add legend
+      html += '<div class="waffle-legend">';
+      labels.forEach((label, idx) => {
+        html += `<div class="waffle-legend-item">
+          <div class="waffle-legend-dot" style="background: ${colors[idx % colors.length]};"></div>
+          <span>${label}</span>
+          <span class="waffle-legend-pct">${percentages[idx]}%</span>
+        </div>`;
+      });
+      html += '</div>';
+
+      container.innerHTML = html;
+    }
+
+    // Initialize charts when page loads
+    document.addEventListener('DOMContentLoaded', () => {
+      initializeCharts();
+      initializeAgeChart();
+      populateUnderdogs();
+    });
+
+    // ── AGE GROUP CHART ────────────────────────────────────────────────────────
+    async function initializeAgeChart() {
+      try {
+        const response = await fetch('/api/stats');
+        const stats = await response.json();
+
+        const ageGroups = ['under-13', '13-17', '18-24', '25-34', '35-44', '45-54', '55+'];
+        const ageLabels = ['<13', '13-17', '18-24', '25-34', '35-44', '45-54', '55+'];
+        
+        const waterData = [];
+        const fireData = [];
+        const grassData = [];
+
+        ageGroups.forEach(group => {
+          const count = stats.ageRangeStats[group] || 0;
+          // Distribute proportionally from starter stats
+          const totalStarters = Object.values(stats.starterStats.water).reduce((a,b) => a+b, 0) +
+                                Object.values(stats.starterStats.fire).reduce((a,b) => a+b, 0) +
+                                Object.values(stats.starterStats.grass).reduce((a,b) => a+b, 0);
+          
+          const proportion = count / (stats.totalResponses || 1);
+          waterData.push(Math.round(Object.values(stats.starterStats.water).reduce((a,b) => a+b, 0) * proportion));
+          fireData.push(Math.round(Object.values(stats.starterStats.fire).reduce((a,b) => a+b, 0) * proportion));
+          grassData.push(Math.round(Object.values(stats.starterStats.grass).reduce((a,b) => a+b, 0) * proportion));
+        });
+
+        const ageCtx = document.getElementById('ageChart');
+        if (!ageCtx) return;
+
+        new Chart(ageCtx.getContext('2d'), {
+          type: 'bar',
+          data: {
+            labels: ageLabels,
+            datasets: [
+              {
+                label: 'Water',
+                data: waterData,
+                backgroundColor: '#3a8fd4',
+                borderWidth: 0,
+                borderRadius: { topLeft:0, topRight:0, bottomLeft:3, bottomRight:3 },
+                borderSkipped: false,
+              },
+              {
+                label: 'Fire',
+                data: fireData,
+                backgroundColor: '#e05030',
+                borderWidth: 0,
+                borderRadius: 0,
+                borderSkipped: false,
+              },
+              {
+                label: 'Grass',
+                data: grassData,
+                backgroundColor: '#5aaf5a',
+                borderWidth: 0,
+                borderRadius: { topLeft:3, topRight:3, bottomLeft:0, bottomRight:0 },
+                borderSkipped: false,
+              },
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: { mode: 'index' },
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                backgroundColor: 'rgba(25,40,90,0.88)',
+                titleColor: '#a8c8ff',
+                bodyColor: '#fff',
+                cornerRadius: 8,
+                padding: 10,
+                callbacks: {
+                  label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y} votes`
+                }
+              }
+            },
+            scales: {
+              x: {
+                stacked: true,
+                grid: { display: false },
+                border: { display: false },
+                ticks: { font: { size: 10, weight: '600' }, color: '#6677aa' }
+              },
+              y: {
+                stacked: true,
+                grid: { color: 'rgba(160,180,220,0.25)', drawTicks: false },
+                border: { display: false },
+                ticks: {
+                  font: { size: 10 },
+                  color: '#99a8cc',
+                  padding: 8,
+                  maxTicksLimit: 6,
+                }
+              }
+            }
+          }
+        });
+      } catch (error) {
+        console.error('Error initializing age chart:', error);
+      }
+    }
+
+    // ── UNDERDOGS SECTION ──────────────────────────────────────────────────────
+    async function populateUnderdogs() {
+      try {
+        const response = await fetch('/api/stats');
+        const stats = await response.json();
+
+        // Get all starters with their vote counts
+        const allStarters = {};
+        
+        Object.entries(stats.starterStats.water).forEach(([name, count]) => {
+          allStarters[name] = { votes: count, type: 'water' };
+        });
+        Object.entries(stats.starterStats.fire).forEach(([name, count]) => {
+          allStarters[name] = { votes: count, type: 'fire' };
+        });
+        Object.entries(stats.starterStats.grass).forEach(([name, count]) => {
+          allStarters[name] = { votes: count, type: 'grass' };
+        });
+
+        // Get the 2 least voted starters
+        const underdogs = Object.entries(allStarters)
+          .sort((a, b) => a[1].votes - b[1].votes)
+          .slice(0, 2);
+
+        const starterIds = {
+          'squirtle': 7, 'bulbasaur': 1, 'charmander': 4,
+          'totodile': 158, 'chikorita': 152, 'cyndaquil': 155,
+          'mudkip': 258, 'treecko': 252, 'torchic': 255,
+          'piplup': 393, 'turtwig': 387, 'chimchar': 390,
+          'oshawott': 501, 'snivy': 495, 'tepig': 498,
+          'froakie': 656, 'chespin': 650, 'fennekin': 653,
+          'popplio': 728, 'rowlet': 722, 'litten': 725,
+          'sobble': 816, 'grookey': 810, 'scorbunny': 813,
+          'quaxly': 912, 'sprigatito': 906, 'fuecoco': 909
+        };
+
+        const starterGens = {
+          'squirtle': 1, 'bulbasaur': 1, 'charmander': 1,
+          'totodile': 2, 'chikorita': 2, 'cyndaquil': 2,
+          'mudkip': 3, 'treecko': 3, 'torchic': 3,
+          'piplup': 4, 'turtwig': 4, 'chimchar': 4,
+          'oshawott': 5, 'snivy': 5, 'tepig': 5,
+          'froakie': 6, 'chespin': 6, 'fennekin': 6,
+          'popplio': 7, 'rowlet': 7, 'litten': 7,
+          'sobble': 8, 'grookey': 8, 'scorbunny': 8,
+          'quaxly': 9, 'sprigatito': 9, 'fuecoco': 9
+        };
+
+        let underdogHTML = '';
+
+        for (const [name, data] of underdogs) {
+          const lowerName = name.toLowerCase();
+          const id = starterIds[lowerName] || 4;
+          const gen = starterGens[lowerName] || 1;
+          const typeColor = data.type === 'water' ? 'water' : data.type === 'fire' ? 'fire' : 'grass';
+          
+          underdogHTML += `
+            <div class="underdog-card ${data.type}">
+              <div class="underdog-top">
+                <div class="votes-badge">
+                  <span class="arrow">↑</span>
+                  <span>${data.votes} vote${data.votes !== 1 ? 's' : ''}</span>
+                </div>
+                <div class="tag-group">
+                  <span class="tag">Gen ${gen}</span>
+                  <span class="tag ${data.type}">${data.type.charAt(0).toUpperCase() + data.type.slice(1)}</span>
+                </div>
+              </div>
+              <div class="underdog-sprite">
+                <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png" alt="${name}" onerror="this.src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png'"/>
+              </div>
+              <div class="underdog-name">${name.charAt(0).toUpperCase() + name.slice(1)}</div>
+            </div>
+          `;
+        }
+
+        const underdogCardsContainer = document.getElementById('underdog-cards');
+        if (underdogCardsContainer) {
+          underdogCardsContainer.innerHTML = underdogHTML;
+        }
+      } catch (error) {
+        console.error('Error populating underdogs:', error);
+      }
+    }
+    </script>
+
+    <script src="script.js"></script>
+</body>
+</html>
