@@ -1,11 +1,6 @@
 {
-  "buildCommand": "npm install",
-  "outputDirectory": ".",
   "env": {
     "MONGODB_URI": "@mongodb_uri"
-  },
-  "envFallback": {
-    "MONGODB_URI": "mongodb+srv://cadizm_db_user:1234@cluster0.xhikdct.mongodb.net/"
   },
   "headers": [
     {
