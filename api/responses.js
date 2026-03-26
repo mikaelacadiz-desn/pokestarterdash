@@ -1,6 +1,6 @@
 const { MongoClient } = require('mongodb');
 
-const uri = "mongodb+srv://cadizm_db_user:1234@cluster0.xhikdct.mongodb.net/";
+const uri = process.env.MONGODB_URI || "mongodb+srv://cadizm_db_user:1234@cluster0.xhikdct.mongodb.net/";
 let cachedClient = null;
 let cachedDb = null;
 
