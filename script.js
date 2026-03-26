@@ -252,7 +252,8 @@ async function loadDashboard() {
         const response = await fetch('/api/responses');
 
         if (!response.ok) {
-            throw new Error('Failed to fetch survey data');
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(`API error: ${response.status} - ${errorData.error || response.statusText}`);
         }
 
         const data = await response.json();
@@ -267,7 +268,7 @@ async function loadDashboard() {
         }
     } catch (error) {
         console.error('Error loading dashboard:', error);
-        loadingElement.textContent = 'Error loading dashboard. Make sure the server is running.';
+        loadingElement.textContent = `Error: ${error.message}`;
     }
 }
 
