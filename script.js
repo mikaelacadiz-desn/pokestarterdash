@@ -186,7 +186,7 @@ document.getElementById('pokemon-survey').addEventListener('submit', async (e) =
 
     try {
         // Send to backend API
-        const response = await fetch('https://pokestarterdash-git-main-minkin.vercel.app/api/responses', {
+        const response = await fetch('/api/responses', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -249,7 +249,7 @@ async function loadDashboard() {
         contentElement.style.display = 'none';
 
         // Fetch survey responses from backend
-        const response = await fetch('https://pokestarterdash-git-main-minkin.vercel.app/api/responses');
+        const response = await fetch('/api/responses');
 
         if (!response.ok) {
             throw new Error('Failed to fetch survey data');
