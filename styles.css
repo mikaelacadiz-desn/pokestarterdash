@@ -79,11 +79,11 @@ body {
 }
 
 #form {
-  max-width: 1100px;
-  margin: 20px auto;
+  max-width: 100%;
+  margin: clamp(10px, 2vw, 20px) auto;
   background: #F5F5F1;
   border-radius: 15px;
-  padding: 30px;
+  padding: clamp(15px, 5vw, 30px);
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
 }
 
@@ -104,7 +104,7 @@ body {
 .header {
   background: var(--color-bg-header);
   text-align: center;
-  padding:100px 24px;
+  padding: clamp(40px, 10vw, 100px) clamp(16px, 4vw, 24px);
 }
 
 .header__title {
@@ -129,11 +129,11 @@ body {
 ===================== */
 .hero {
   background: var(--color-bg-hero);
-  padding: 70px 24px 52px;
+  padding: clamp(30px, 8vw, 70px) clamp(16px, 4vw, 24px) clamp(32px, 8vw, 52px);
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-items: center;
-  gap: 48px;
+  gap: clamp(16px, 6vw, 48px);
   transition: background 0.3s ease;
   position: relative;
 }
@@ -170,8 +170,8 @@ body {
 }
 
 .pokemon-card__sprite {
-  width: 550px;
-  height: 550px;
+  width: clamp(200px, 60vw, 550px);
+  height: clamp(200px, 60vw, 550px);
   object-fit: contain;
   image-rendering: pixelated;
   filter: drop-shadow(0 6px 12px rgba(0,0,0,0.22));
@@ -197,7 +197,7 @@ body {
 
 .pokemon-card__evolutions {
   display: flex;
-  gap: 80px;
+  gap: clamp(20px, 8vw, 80px);
   justify-content: center;
   width: 100%;
   align-items: center;
@@ -216,7 +216,7 @@ body {
 .evo-slot:not(:last-child)::after {
   content: "→";
   position: absolute;
-  right: -42px;
+  right: clamp(-25px, -7vw, -42px);
   top: 50%;
   transform: translateY(-50%);
   font-size: 2rem;
@@ -225,8 +225,8 @@ body {
 }
 
 .evo-slot__img {
-  width: 100px;
-  height: 100px;
+  width: clamp(60px, 15vw, 100px);
+  height: clamp(60px, 15vw, 100px);
   opacity: 1;
   display: flex;
   align-items: center;
@@ -342,12 +342,12 @@ body {
 /* CTA Button */
 .btn-vote {
   display: block;
-  width: 400px;
+  width: clamp(280px, 90%, 400px);
   background: var(--color-btn-bg);
   color: var(--color-btn-text);
   font-family: var(--font-pixel);
-  font-size: 1.1rem;
-  padding: 32px 40px;
+  font-size: clamp(0.7rem, 2.5vw, 1.1rem);
+  padding: clamp(16px, 4vw, 32px) clamp(24px, 6vw, 40px);
   border-radius: var(--radius-btn);
   border: none;
   cursor: pointer;
@@ -378,7 +378,7 @@ body {
 }
 
 .type-panel {
-  padding: 80px 32px;
+  padding: clamp(30px, 8vw, 80px) clamp(16px, 4vw, 32px);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -400,8 +400,8 @@ body {
 }
 
 .type-panel__sprite {
-  width: 300px;
-  height: 300px;
+  width: clamp(120px, 30vw, 300px);
+  height: clamp(120px, 30vw, 300px);
   object-fit: contain;
   image-rendering: pixelated;
   filter: drop-shadow(0 4px 10px rgba(0,0,0,0.22));
@@ -515,12 +515,110 @@ body {
 /* =====================
    RESPONSIVE
 ===================== */
-@media (max-width: 640px) {
+
+/* Mobile-first: Extra small devices (320px and up) */
+@media (max-width: 480px) {
   .hero {
     grid-template-columns: 1fr;
     align-items: center;
+    padding: 24px 12px 32px;
+    gap: 24px;
+  }
+
+  .hero__sprite-column {
+    order: 1;
+  }
+
+  .hero__info {
+    order: 2;
+    align-items: center;
+    text-align: center;
+    gap: 20px;
+  }
+
+  .hero__eyebrow {
+    font-size: 0.8rem;
+  }
+
+  .hero__name {
+    font-size: clamp(1.2rem, 5vw, 2.5rem);
+  }
+
+  .badges {
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .badge {
+    font-size: 0.7rem;
+    padding: 4px 12px;
+  }
+
+  .vote-count {
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .vote-count__text {
+    font-size: 0.9rem;
+  }
+
+  .hero__trainers {
+    font-size: 0.85rem;
+  }
+
+  .type-panels {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+
+  .type-panel {
+    padding: 40px 16px;
+    gap: 12px;
+  }
+
+  .type-panel__label {
+    font-size: 0.75rem;
+  }
+
+  .type-panel__name {
+    font-size: clamp(0.8rem, 3vw, 1.5rem);
+  }
+
+  .type-panel__gen-badge {
+    font-size: 0.65rem;
+    padding: 3px 10px;
+  }
+
+  .type-panel__votes .vote-count__text {
+    font-size: 0.8rem;
+  }
+
+  .header {
+    padding: 40px 16px 30px;
+  }
+
+  .header__title {
+    font-size: 1rem;
+  }
+
+  .header__subtitle {
+    font-size: 0.5rem;
+  }
+
+  .vote-count__arrow {
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 14px solid var(--color-vote-arrow);
+  }
+}
+
+/* Small tablets and large phones (481px - 768px) */
+@media (max-width: 768px) {
+  .hero {
+    grid-template-columns: 1fr;
     padding: 36px 16px 40px;
-    gap: 32px;
+    gap: 28px;
   }
 
   .hero__sprite-column {
@@ -547,6 +645,231 @@ body {
 
   .header__title {
     font-size: 1.2rem;
+  }
+
+  .container {
+    padding: 0;
+  }
+
+  /* Form adjustments */
+  .starters-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .starter-card {
+    max-width: 100%;
+    padding: 12px;
+  }
+
+  .starter-card img {
+    width: clamp(80px, 20vw, 120px);
+    height: clamp(80px, 20vw, 120px);
+  }
+
+  .type-buttons-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .type-button {
+    font-size: 0.65rem;
+    padding: 10px 12px;
+  }
+
+  /* Map and stats sections */
+  .map-panel {
+    grid-template-columns: 1fr;
+    gap: 0;
+    border-radius: 0;
+  }
+
+  .map-side {
+    padding: 40px 20px;
+    gap: 15px;
+  }
+
+  .top10-side {
+    padding: 40px 20px;
+    border-left: none;
+    border-top: 1.5px solid #d0dcee;
+  }
+
+  #map-svg {
+    min-height: 300px;
+  }
+
+  .map-legend {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .legend-item {
+    font-size: 11px;
+  }
+
+  .top10-row {
+    grid-template-columns: 20px 70px 100px 50px;
+    gap: 8px;
+  }
+
+  .top10-sprite {
+    width: 60px;
+    height: 60px;
+  }
+
+  .top10-rank {
+    font-size: 10px;
+  }
+
+  .top10-name {
+    font-size: 11px;
+  }
+
+  .top10-votes {
+    font-size: 12px;
+  }
+
+  /* Choice stats section */
+  .choice-stats-section {
+    padding: 60px 20px;
+  }
+
+  .choice-stats-panel {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .choice-stats-text h3 {
+    font-size: 1rem;
+  }
+
+  .choice-stats-text p {
+    font-size: 0.9rem;
+    line-height: 1.8;
+  }
+
+  #choice-method-name {
+    font-size: 2.5rem;
+  }
+
+  .choice-stats-chart {
+    height: 300px;
+  }
+
+  /* Combined trainer section */
+  .combined-trainer-section {
+    padding: 60px 20px;
+  }
+
+  .combined-trainer-panel {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .combined-trainer-text {
+    font-size: 1rem;
+  }
+
+  .type-buttons {
+    gap: 12px;
+    margin: 40px 0;
+  }
+
+  .combined-trainer-type-button {
+    padding: 20px 32px;
+    font-size: 1.5rem;
+  }
+
+  .combined-trainer-image img {
+    max-height: 400px;
+  }
+
+  #trainerImage {
+    width: auto;
+    max-width: 100%;
+  }
+}
+
+/* Medium tablets (769px - 1080px) */
+@media (max-width: 1080px) {
+  .map-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .combined-trainer-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .choice-stats-panel {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+
+  .choice-stats-chart {
+    height: 250px;
+  }
+}
+
+/* Classic mobile breakpoint (640px and down) */
+@media (max-width: 640px) {
+  .hero {
+    grid-template-columns: 1fr;
+    align-items: center;
+    padding: 24px 12px 32px;
+    gap: 20px;
+  }
+
+  .hero__sprite-column {
+    order: 1;
+  }
+
+  .hero__info {
+    order: 2;
+    align-items: center;
+    text-align: center;
+  }
+
+  .badges {
+    justify-content: center;
+  }
+
+  .vote-count {
+    justify-content: center;
+  }
+
+  .type-panels {
+    grid-template-columns: 1fr;
+  }
+
+  .header__title {
+    font-size: 1.1rem;
+  }
+
+  .starters-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .starter-card {
+    max-width: 100%;
+  }
+
+  .starter-card img {
+    width: 100px;
+    height: 100px;
+  }
+
+  .starter-card p {
+    font-size: 0.85rem;
+  }
+
+  .gen-badge {
+    font-size: 0.7rem;
+  }
+
+  .type-buttons-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
@@ -908,39 +1231,183 @@ select:focus, input[type="text"]:focus {
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .container {
+  #form {
+    max-width: 100%;
+    margin: 10px;
     padding: 20px;
+    border-radius: 10px;
+  }
+
+  .container {
+    padding: 0;
   }
 
   h1 {
-    font-size: 2em;
+    font-size: 1.5em;
+  }
+
+  .form-section {
+    margin-bottom: 30px;
+    padding: 15px;
+    margin-top: 30px;
+  }
+
+  .form-section h3 {
+    font-size: 1rem;
+  }
+
+  .form-section h4 {
+    font-size: 0.95rem;
   }
 
   .starters-grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 10px;
   }
 
   .starter-card {
-    padding: 10px;
-    gap: 10px;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px;
+    max-width: 100%;
   }
 
   .starter-card img {
-    width: 100px;
-    height: 100px;
+    width: 80px;
+    height: 80px;
   }
 
   .starter-card p {
-    font-size: 0.9em;
+    font-size: 0.8rem;
   }
 
   .gen-badge {
-    font-size: 0.7em;
+    font-size: 0.65rem;
   }
 
   .type-buttons-grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .type-button {
+    font-size: 0.7rem;
+    padding: 10px 12px;
+  }
+
+  select, input[type="text"] {
+    padding: 10px;
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+
+  .radio-group {
+    gap: 10px;
+  }
+
+  .radio-group label {
+    padding: 10px;
+    font-size: 0.95rem;
+  }
+
+  .submit-button {
+    font-size: 1rem;
+    padding: 12px;
+  }
+
+  .back-button {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  #form {
+    margin: 8px;
+    padding: 15px;
+  }
+
+  h1 {
+    font-size: 1.2em;
+  }
+
+  h2 {
+    font-size: 1.1em;
+  }
+
+  .form-section {
+    margin-bottom: 20px;
+    padding: 12px;
+    margin-top: 20px;
+  }
+
+  .form-section h3 {
+    font-size: 0.9rem;
+  }
+
+  .form-section h4 {
+    font-size: 0.85rem;
+  }
+
+  .starters-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .starter-card {
+    flex-direction: row;
+    gap: 8px;
+  }
+
+  .starter-card img {
+    width: 70px;
+    height: 70px;
+  }
+
+  .starter-info {
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .starter-card p {
+    font-size: 0.75rem;
+  }
+
+  .type-buttons-grid {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .type-button {
+    font-size: 0.65rem;
+    padding: 8px 10px;
+    width: 100%;
+  }
+
+  select, input[type="text"] {
+    padding: 10px 8px;
+    font-size: 16px;
+  }
+
+  .radio-group {
+    gap: 8px;
+  }
+
+  .radio-group label {
+    padding: 8px;
+    font-size: 0.85rem;
+  }
+
+  .radio-group input[type="radio"] {
+    width: 18px;
+    height: 18px;
+  }
+
+  .submit-button {
+    font-size: 0.95rem;
+    padding: 12px 10px;
+  }
+
+  .back-button {
+    font-size: 0.8rem;
   }
 }
 
@@ -948,7 +1415,7 @@ select:focus, input[type="text"]:focus {
    MAP SECTION
 ===================== */
 .map-section {
-  padding: 0 24px 40px;
+  padding: 0 clamp(12px, 4vw, 24px) clamp(20px, 5vw, 40px);
   background: linear-gradient(180deg, var(--color-bg-header) 0%, #f5f2ed 100%);
   width: 100%;
 }
@@ -970,7 +1437,7 @@ select:focus, input[type="text"]:focus {
 .map-side {
     display: flex;
     flex-direction: column;
-    padding: 60px 60px;
+    padding: clamp(20px, 5vw, 60px);
     gap: 10px;
     background: linear-gradient(160deg, #deeaf8 0%, #ccdcf0 100%);
     position: relative;
@@ -989,7 +1456,7 @@ select:focus, input[type="text"]:focus {
 }
 
 .map-title {
-    font-size: 26px;
+    font-size: clamp(18px, 5vw, 26px);
     font-weight: 700;
     font-family: var(--pixel);
     color: #1a2565;
@@ -1020,7 +1487,7 @@ select:focus, input[type="text"]:focus {
 #map-svg {
     width: 100%;
     flex: 1;
-    min-height: 650px;
+    min-height: clamp(200px, 60vw, 650px);
     position: relative;
     z-index: 1;
 }
@@ -1088,14 +1555,14 @@ select:focus, input[type="text"]:focus {
 .top10-side {
     background: #fff;
     border-left: 1.5px solid #d0dcee;
-    padding: 60px 50px;
+    padding: clamp(20px, 5vw, 60px) clamp(20px, 5vw, 50px);
     display: flex;
     flex-direction: column;
     gap: 12px;
 }
 
 .top10-title {
-    font-size: 16px;
+    font-size: clamp(14px, 4vw, 16px);
     font-weight: 700;
     font-family: var(--pixel);
     color: #1a2565;
@@ -1162,14 +1629,14 @@ select:focus, input[type="text"]:focus {
 ===================== */
 .choice-stats-section {
     background: #2D2D3A;
-    padding: 200px 24px;
+    padding: clamp(40px, 10vw, 200px) clamp(16px, 5vw, 24px);
     width: 100%;
 }
 
 .choice-stats-panel {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 150px;
+    gap: clamp(30px, 10vw, 150px);
     align-items: center;
     max-width: 1400px;
     margin: 0 auto;
@@ -1183,7 +1650,7 @@ select:focus, input[type="text"]:focus {
 
 .choice-stats-text h3 {
     font-family: 'Press Start 2P', monospace;
-    font-size: 1.3rem;
+    font-size: clamp(0.9rem, 3vw, 1.3rem);
     color: #ffffff;
     margin-bottom: 16px;
     letter-spacing: 1px;
@@ -1191,7 +1658,7 @@ select:focus, input[type="text"]:focus {
 
 .choice-stats-text p {
     font-family: 'Press Start 2P', monospace;
-    font-size: 1.3rem;
+    font-size: clamp(0.8rem, 2.5vw, 1.3rem);
     line-height: 2.5;
     color: rgba(255, 255, 255, 0.9);
 }
@@ -1215,7 +1682,7 @@ select:focus, input[type="text"]:focus {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 500px;
+    height: clamp(250px, 50vw, 500px);
 }
 
 #choiceMethodChart {
@@ -1224,14 +1691,14 @@ select:focus, input[type="text"]:focus {
 
 .combined-trainer-section {
     background: #FFFBF2;
-    padding: 100px 24px;
+    padding: clamp(40px, 10vw, 100px) clamp(16px, 5vw, 24px);
     width: 100%;
 }
 
 .combined-trainer-panel {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 150px;
+    gap: clamp(30px, 10vw, 150px);
     align-items: center;
     max-width: 1500px;
     margin: 0 auto;
@@ -1241,7 +1708,7 @@ select:focus, input[type="text"]:focus {
     color: #1a1a2e;
     text-align: center;
     font-family: 'Press Start 2P', monospace;
-    font-size: 1.3rem;
+    font-size: clamp(0.8rem, 2.5vw, 1.3rem);
     line-height: 2.5;
 }
 
@@ -1254,11 +1721,11 @@ select:focus, input[type="text"]:focus {
 }
 
 .combined-trainer-type-button {
-    padding: 32px 56px;
+    padding: clamp(16px, 4vw, 32px) clamp(24px, 8vw, 56px);
     border: none;
     border-radius: 50px;
     font-family: 'Press Start 2P', monospace;
-    font-size: 2rem;
+    font-size: clamp(1rem, 3vw, 2rem);
     color: #ffffff;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -1300,7 +1767,7 @@ select:focus, input[type="text"]:focus {
 }
 
 .combined-trainer-image img {
-    max-height: 800px;
+    max-height: clamp(200px, 50vw, 800px);
     object-fit: contain;
 }
 
@@ -1322,5 +1789,5 @@ select:focus, input[type="text"]:focus {
 }
 
 #trainerImage {
-  width: 700px
+  width: clamp(200px, 90vw, 700px);
 }
