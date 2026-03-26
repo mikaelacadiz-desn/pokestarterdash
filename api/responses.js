@@ -1,23 +1,6 @@
 const { MongoClient } = require('mongodb');
 
 const uri = process.env.MONGODB_URI || "mongodb+srv://cadizm_db_user:1234@cluster0.xhikdct.mongodb.net/";
-let cachedClient = null;
-let cachedDb = null;
-
-async function connectToDatabase() {
-    if (cachedClient && cachedDb) {
-        return { client: cachedClient, db: cachedDb };
-    }
-
-    const client = new MongoClient(uri);
-    await client.connect();
-    const db = client.db('responses');
-    
-    cachedClient = client;
-    cachedDb = db;
-    
-    return { client, db };
-}
 
 module.exports = async function handler(req, res) {
     // Enable CORS
@@ -31,8 +14,14 @@ module.exports = async function handler(req, res) {
         return;
     }
 
+    let client;
     try {
-        const { db } = await connectToDatabase();
+        client = new MongoClient(uri, { 
+            serverSelectionTimeoutMS: 5000,
+            connectTimeoutMS: 10000
+        });
+        await client.connect();
+        const db = client.db('responses');
         const collection = db.collection('pokeresponses');
 
         if (req.method === 'GET') {
@@ -49,7 +38,15 @@ module.exports = async function handler(req, res) {
             res.status(405).json({ error: 'Method not allowed' });
         }
     } catch (error) {
-        console.error('Error:', error);
-        res.status(500).json({ error: 'Failed to process request' });
+        console.error('API error:', error.message);
+        res.status(500).json({ error: 'Failed to process request: ' + error.message });
+    } finally {
+        if (client) {
+            try {
+                await client.close();
+            } catch (err) {
+                console.error('Error closing client:', err);
+            }
+        }
     }
 }

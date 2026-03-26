@@ -1,23 +1,6 @@
 const { MongoClient } = require('mongodb');
 
 const uri = process.env.MONGODB_URI || "mongodb+srv://cadizm_db_user:1234@cluster0.xhikdct.mongodb.net/";
-let cachedClient = null;
-let cachedDb = null;
-
-async function connectToDatabase() {
-    if (cachedClient && cachedDb) {
-        return { client: cachedClient, db: cachedDb };
-    }
-
-    const client = new MongoClient(uri);
-    await client.connect();
-    const db = client.db('responses');
-    
-    cachedClient = client;
-    cachedDb = db;
-    
-    return { client, db };
-}
 
 module.exports = async function handler(req, res) {
     // Enable CORS
@@ -36,8 +19,14 @@ module.exports = async function handler(req, res) {
         return;
     }
 
+    let client;
     try {
-        const { db } = await connectToDatabase();
+        client = new MongoClient(uri, { 
+            serverSelectionTimeoutMS: 5000,
+            connectTimeoutMS: 10000
+        });
+        await client.connect();
+        const db = client.db('responses');
         const collection = db.collection('pokeresponses');
         const allResponses = await collection.find({}).toArray();
         console.log(`✓ Found ${allResponses.length} responses in MongoDB`);
@@ -189,7 +178,15 @@ module.exports = async function handler(req, res) {
             totalVotes: allResponses.length
         });
     } catch (error) {
-        console.error('Error calculating map data:', error);
-        res.status(500).json({ error: 'Failed to calculate map data' });
+        console.error('Error calculating map data:', error.message);
+        res.status(500).json({ error: 'Failed to calculate map data: ' + error.message });
+    } finally {
+        if (client) {
+            try {
+                await client.close();
+            } catch (err) {
+                console.error('Error closing client:', err);
+            }
+        }
     }
 }
