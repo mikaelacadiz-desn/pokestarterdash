@@ -215,7 +215,7 @@ document.getElementById('pokemon-survey').addEventListener('submit', async (e) =
         document.getElementById('home').classList.add('active');
 
         // Reload dashboard to show updated results
-        loadDashboard();
+        await loadDashboard();
         
         // Refresh map data and top 10 list
         await refreshMapData();
@@ -560,22 +560,21 @@ async function fetchMapData() {
     }
 }
 
-// Refresh map data and top 10 list (called after survey submission)
+// Refresh top 10 list quickly (called after survey submission)
 async function refreshMapData() {
     try {
-        // Add cache-busting query parameter to prevent stale responses
-        const response = await fetch(`/api/map-data?t=${Date.now()}`);
-        if (!response.ok) throw new Error('Failed to refresh map data');
-        const data = await response.json();
-        countryData = data.countryData || {};
-        top10MapData = data.top10MapData || [];
+        // Fetch ONLY the top 10 (much faster than map-data endpoint)
+        const response = await fetch(`/api/top10?t=${Date.now()}`);
+        if (!response.ok) throw new Error('Failed to refresh top 10 data');
+        const top10Data = await response.json();
+        top10MapData = top10Data;
         
-        // Update the top 10 list on the page
+        // Update the top 10 list on the page immediately
         populateTop10();
         
-        console.log('Map data refreshed:', { newCountryCount: Object.keys(countryData).length, top10Count: top10MapData.length });
+        console.log('Top 10 refreshed:', top10MapData.map(p => `${p.name}(${p.votes})`).join(', '));
     } catch (error) {
-        console.error('Error refreshing map data:', error);
+        console.error('Error refreshing top 10:', error);
     }
 }
 

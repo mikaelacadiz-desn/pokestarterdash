@@ -127,11 +127,29 @@ module.exports = async function handler(req, res) {
                 countryStarters[country] = {};
             }
 
-            // Count all three starters for this response
+            // Count each starter ONCE per response (for most popular by country)
+            // Fire starter
+            if (response.fireStarter) {
+                const starter = response.fireStarter.toLowerCase();
+                countryStarters[country][starter] = (countryStarters[country][starter] || 0) + 1;
+            }
+            // Water starter
+            if (response.waterStarter) {
+                const starter = response.waterStarter.toLowerCase();
+                countryStarters[country][starter] = (countryStarters[country][starter] || 0) + 1;
+            }
+            // Grass starter
+            if (response.grassStarter) {
+                const starter = response.grassStarter.toLowerCase();
+                countryStarters[country][starter] = (countryStarters[country][starter] || 0) + 1;
+            }
+        });
+
+        // Count global votes (each starter counted per response it appears in)
+        allResponses.forEach(response => {
             [response.fireStarter, response.waterStarter, response.grassStarter].forEach(starter => {
                 if (starter) {
                     const starterName = starter.toLowerCase();
-                    countryStarters[country][starterName] = (countryStarters[country][starterName] || 0) + 1;
                     globalStarterVotes[starterName] = (globalStarterVotes[starterName] || 0) + 1;
                 }
             });
