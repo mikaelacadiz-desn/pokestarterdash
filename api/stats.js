@@ -3,6 +3,11 @@ const { MongoClient } = require('mongodb');
 const uri = process.env.MONGODB_URI || "mongodb+srv://cadizm_db_user:1234@cluster0.xhikdct.mongodb.net/";
 
 module.exports = async function handler(req, res) {
+    // Prevent caching
+    res.setHeader('Cache-Control', 'no-store, must-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+    
     // Enable CORS
     res.setHeader('Access-Control-Allow-Credentials', 'true');
     res.setHeader('Access-Control-Allow-Origin', '*');

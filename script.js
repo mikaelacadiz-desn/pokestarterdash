@@ -216,6 +216,9 @@ document.getElementById('pokemon-survey').addEventListener('submit', async (e) =
 
         // Reload dashboard to show updated results
         loadDashboard();
+        
+        // Refresh map data and top 10 list
+        await refreshMapData();
     } catch (error) {
         console.error('Error submitting survey:', error);
         alert('Failed to submit survey. Please try again.');
@@ -554,6 +557,25 @@ async function fetchMapData() {
     } catch (error) {
         console.error('Error fetching map data from MongoDB:', error);
         return false;
+    }
+}
+
+// Refresh map data and top 10 list (called after survey submission)
+async function refreshMapData() {
+    try {
+        // Add cache-busting query parameter to prevent stale responses
+        const response = await fetch(`/api/map-data?t=${Date.now()}`);
+        if (!response.ok) throw new Error('Failed to refresh map data');
+        const data = await response.json();
+        countryData = data.countryData || {};
+        top10MapData = data.top10MapData || [];
+        
+        // Update the top 10 list on the page
+        populateTop10();
+        
+        console.log('Map data refreshed:', { newCountryCount: Object.keys(countryData).length, top10Count: top10MapData.length });
+    } catch (error) {
+        console.error('Error refreshing map data:', error);
     }
 }
 
