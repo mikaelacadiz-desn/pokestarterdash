@@ -79,7 +79,7 @@ body {
 }
 
 #form {
-  max-width: 500px;
+  max-width: 900px;
   margin: clamp(10px, 2vw, 20px) auto;
   background: #F5F5F1;
   border-radius: 15px;
