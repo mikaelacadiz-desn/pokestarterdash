@@ -138,6 +138,12 @@ module.exports = async function handler(req, res) {
         });
 
         console.log(`✓ Processed countries:`, Object.keys(countryStarters).length);
+        console.log(`✓ All responses count: ${allResponses.length}`);
+        console.log(`✓ Global starter votes:`, Object.entries(globalStarterVotes)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 15)
+            .map(([name, votes]) => `${name}(${votes})`)
+            .join(', '));
 
         // Build country data with proper vote counting
         const countryData = {};
