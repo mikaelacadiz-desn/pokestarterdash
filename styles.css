@@ -1187,11 +1187,12 @@ select:focus, input[type="text"]:focus {
 .submit-button {
   width: 100%;
   padding: 15px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #CC0100;
   color: white;
   border: none;
-  border-radius: 10px;
-  font-size: 1.2em;
+  border-radius: 100px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 1rem;
   font-weight: bold;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -1200,7 +1201,7 @@ select:focus, input[type="text"]:focus {
 
 .submit-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 5px 20px rgba(204, 1, 0, 0.4);
 }
 
 .submit-button:active {
