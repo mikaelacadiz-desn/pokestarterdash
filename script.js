@@ -44,19 +44,42 @@ const pokemonTypes = [
     'rock', 'ghost', 'dragon', 'dark', 'steel', 'fairy'
 ];
 
+// URL-based routing
+function navigateToTab(tabName) {
+    // Remove active class from all buttons and contents
+    document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+    // Add active class to target tab
+    const tabElement = document.getElementById(tabName);
+    if (tabElement) {
+        tabElement.classList.add('active');
+    }
+
+    // Update URL based on tab
+    if (tabName === 'form') {
+        window.history.pushState({ tab: 'form' }, '', '/survey');
+    } else {
+        window.history.pushState({ tab: 'home' }, '', '/');
+    }
+}
+
 // Tab switching
 document.querySelectorAll('.tab-button').forEach(button => {
     button.addEventListener('click', () => {
         const tabName = button.dataset.tab;
+        navigateToTab(tabName);
+    });
+});
 
-        // Remove active class from all buttons and contents
+// Handle browser back/forward buttons
+window.addEventListener('popstate', (event) => {
+    if (event.state && event.state.tab) {
+        const tabName = event.state.tab;
         document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
         document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-
-        // Add active class to clicked button and corresponding content
-        button.classList.add('active');
         document.getElementById(tabName).classList.add('active');
-    });
+    }
 });
 
 // Load Pokemon starters from PokeAPI
@@ -210,9 +233,8 @@ document.getElementById('pokemon-survey').addEventListener('submit', async (e) =
         document.querySelectorAll('.starter-card').forEach(card => card.classList.remove('selected'));
         document.querySelectorAll('.type-button').forEach(btn => btn.classList.remove('selected'));
 
-        // Switch to home tab
-        document.getElementById('form').classList.remove('active');
-        document.getElementById('home').classList.add('active');
+        // Navigate to home tab
+        navigateToTab('home');
 
         // Reload dashboard to show updated results
         await loadDashboard();
@@ -229,15 +251,22 @@ document.getElementById('pokemon-survey').addEventListener('submit', async (e) =
 document.addEventListener('DOMContentLoaded', async () => {
     loadStarters();
     loadTypeButtons();
-    loadDashboard(); // Load dashboard on initial page load
 
     // Add back button handler
     const backButton = document.getElementById('back-to-home');
     if (backButton) {
         backButton.addEventListener('click', () => {
-            document.getElementById('form').classList.remove('active');
-            document.getElementById('home').classList.add('active');
+            navigateToTab('home');
         });
+    }
+
+    // Check URL to determine which tab to show
+    const pathname = window.location.pathname;
+    if (pathname.includes('/survey')) {
+        navigateToTab('form');
+    } else {
+        navigateToTab('home');
+        loadDashboard(); // Load dashboard on initial page load
     }
 });
 
@@ -319,14 +348,12 @@ async function processAndDisplayData(responses) {
     const voteBtn = document.getElementById('vote-btn');
     if (voteBanner) {
         voteBanner.addEventListener('click', () => {
-            document.getElementById('home').classList.remove('active');
-            document.getElementById('form').classList.add('active');
+            navigateToTab('form');
         });
     }
     if (voteBtn) {
         voteBtn.addEventListener('click', () => {
-            document.getElementById('home').classList.remove('active');
-            document.getElementById('form').classList.add('active');
+            navigateToTab('form');
         });
     }
 }
